@@ -4,20 +4,28 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import listen_to_this.entities.User;
 import listen_to_this.exceptions.UnauthorizedException;
+import listen_to_this.services.UserService;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.UUID;
 
 @Component
 public class JWTFilter extends OncePerRequestFilter {
 
     private final JWTTools jwtTools;
+    private final UserService userService;
 
-    public JWTFilter(JWTTools jwtTools) {
+    public JWTFilter(JWTTools jwtTools, UserService userService) {
         this.jwtTools = jwtTools;
+        this.userService = userService;
     }
 
     @Override
@@ -29,6 +37,12 @@ public class JWTFilter extends OncePerRequestFilter {
         String accessToken = authHeader.substring(7);
 
         jwtTools.verifyToken(accessToken);
+
+        UUID userId = jwtTools.extractIdFromToken(accessToken);
+        User authenticatedUser = this.userService.findById(userId);
+//        String auth
+        Authentication authentication = new UsernamePasswordAuthenticationToken(authenticatedUser, null, authenticatedUser.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
         filterChain.doFilter(request, response);
     }

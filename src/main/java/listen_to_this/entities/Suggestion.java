@@ -26,7 +26,7 @@ public class Suggestion {
     public Suggestion(Long songId, Long suggestionId, int vote) {
         this.songId = songId;
         this.suggestionId = suggestionId;
-        this.vote = vote;
+        this.vote = 0;
     }
 
     public Long getSongId() {

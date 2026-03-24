@@ -7,6 +7,7 @@ import listen_to_this.payloads.LoginResponseDTO;
 import listen_to_this.payloads.UserDTO;
 import listen_to_this.services.AuthService;
 import listen_to_this.services.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -20,20 +21,20 @@ public class AuthController {
     private final AuthService authService;
     private final UserService userService;
 
+    @Autowired
     public AuthController(AuthService authService, UserService userService) {
         this.authService = authService;
         this.userService = userService;
     }
 
     @PostMapping("/login")
-    public LoginResponseDTO login(@RequestBody LoginDTO body) {
-        return new LoginResponseDTO(this.authService.checkCredentialAndGenerateToken(body));
+    public LoginResponseDTO login(@RequestBody @Validated LoginDTO body) {
+        return this.authService.checkCredentialAndGenerateToken(body);
     }
 
-    @PostMapping("/register")
+    @PostMapping("/registration")
     @ResponseStatus(HttpStatus.CREATED)
     public User createUser(@RequestBody @Validated UserDTO payload, BindingResult validationResult) {
-        // @Validated serve per attivare la validazione, se non lo usiamo è come non farla
 
         if (validationResult.hasErrors()) {
 
@@ -47,4 +48,9 @@ public class AuthController {
             return this.userService.save(payload);
         }
     }
+
+//    @GetMapping("/lo")
+//    public User getProfile(@AuthenticationPrincipal User currentAuthenticatedUser) {
+//        return currentAuthenticatedUser;
+//    }
 }

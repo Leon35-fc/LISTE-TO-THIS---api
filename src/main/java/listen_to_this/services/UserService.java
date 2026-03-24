@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -19,13 +20,15 @@ import java.util.UUID;
 public class UserService {
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(UserService.class);
     private final UserRepo userRepo;
+    private final PasswordEncoder bcrypt;
 
     @Autowired
-    public UserService(UserRepo userRepo) {
+    public UserService(UserRepo userRepo, PasswordEncoder bcrypt) {
         this.userRepo = userRepo;
+        this.bcrypt = bcrypt;
     }
 
-    public User getById(UUID id) {
+    public User findById(UUID id) {
         return this.userRepo.findById(id)
                 .orElseThrow(() -> new NotFoundException("User with id " + " not found."));
 
@@ -50,7 +53,7 @@ public class UserService {
             throw new BadRequestException("Username " + user.getUsername() + " already in use.");
         });
 
-        User newUser = new User(payload.username(), payload.email(), payload.password());
+        User newUser = new User(payload.username(), payload.email(), bcrypt.encode(payload.password()));
         newUser.setProfileImage("https://ui-avatars.com/api?name=" + payload.username());
 
         User savedUser = this.userRepo.save(newUser);
@@ -66,4 +69,15 @@ public class UserService {
                 .of(page, size, sortCriteria.equals("desc") ? Sort.by(orderBy).descending() : Sort.by(orderBy));
         return this.userRepo.findAll(pageable);
     }
+
+    public User findByIdAndUpdate(UUID id, UserDTO payload) {
+        User found = this.findById(id);
+
+        if (!found.getEmail().equals(payload.email())) {
+        }
+
+        User updatedUser = new User();
+        return updatedUser;
+    }
+    
 }

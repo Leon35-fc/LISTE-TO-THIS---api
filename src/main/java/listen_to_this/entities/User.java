@@ -1,14 +1,17 @@
 package listen_to_this.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "users")
-public class User {
+@JsonIgnoreProperties("password")
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -31,7 +34,7 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id")
     )
     @Column(name = "canzone_id")
-    private Set<Long> preferiti = new HashSet<>();
+    private Set<Long> favourite;
 
     public User() {
     }
@@ -40,6 +43,7 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.favourite = new HashSet<>();
     }
 
     public UUID getId() {
@@ -62,6 +66,11 @@ public class User {
         this.email = email;
     }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(email));
+    }
+
     public String getPassword() {
         return password;
     }
@@ -79,11 +88,11 @@ public class User {
     }
 
     public Set<Long> getPreferiti() {
-        return preferiti;
+        return favourite;
     }
 
-    public void setPreferiti(Set<Long> preferiti) {
-        this.preferiti = preferiti;
+    public void setPreferiti(Set<Long> favourite) {
+        this.favourite = favourite;
     }
 
     @Override
@@ -94,7 +103,13 @@ public class User {
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", profileImage='" + profileImage + '\'' +
-                ", preferiti=" + preferiti +
+                ", favourite=" + favourite +
                 '}';
     }
+//    PER PERMETTERE LA MODIFICA SOLO ALL'UTENTE CORRENTE
+//    @Override
+//    public Collection<? extends GrantedAuthority> getAuthorities() {
+//        return List.of(new SimpleGrantedAuthority(this.username));
+//    }
+
 }

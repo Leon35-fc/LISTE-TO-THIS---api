@@ -1,6 +1,7 @@
 package listen_to_this.controllers;
 
 import listen_to_this.entities.User;
+import listen_to_this.payloads.LoginDTO;
 import listen_to_this.services.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,4 +26,16 @@ public class UserController {
 
         return this.userService.findAll(page, size, orderBy, sortCriteria);
     }
+
+    @GetMapping{"/me"}
+    public User findByEmail(@RequestParam LoginDTO payload) {
+        return this.userService.findByEmail(payload.email());
+    }
+
+//    @PutMapping("/me")
+//    public User findByIdAndUpdate(@PathVariable UUID userId, @RequestBody UserDTO payload) {
+//        return this.userService.findByIdAndUpdate()
+//    }
+
+
 }

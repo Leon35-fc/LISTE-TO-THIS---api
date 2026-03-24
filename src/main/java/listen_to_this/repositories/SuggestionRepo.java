@@ -8,4 +8,6 @@ import java.util.UUID;
 
 @Repository
 public interface SuggestionRepo extends JpaRepository<Suggestion, UUID> {
+
+    public Suggestion findBySongId(Long songId);
 }
