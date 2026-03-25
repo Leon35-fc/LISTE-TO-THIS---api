@@ -54,7 +54,7 @@ public class UserService {
         });
 
         User newUser = new User(payload.username(), payload.email(), bcrypt.encode(payload.password()));
-        newUser.setProfileImage("https://ui-avatars.com/api?name=" + payload.username());
+        newUser.setProfileImage("https://ui-avatars.com/api?name=" + payload.username().replace(' ', '+'));
 
         User savedUser = this.userRepo.save(newUser);
         log.info("User with id " + savedUser.getId() + " correctly saved!");
@@ -73,11 +73,15 @@ public class UserService {
     public User findByIdAndUpdate(UUID id, UserDTO payload) {
         User found = this.findById(id);
 
-        if (!found.getEmail().equals(payload.email())) {
+        if (payload.email() != null && !found.getEmail().equals(payload.email())) {
+            found.setEmail(payload.email());
+        }
+        if (payload.password() != null && !found.getPassword().equals(bcrypt.encode(payload.password()))) {
+            found.setEmail(bcrypt.encode(payload.password()));
         }
 
-        User updatedUser = new User();
+        User updatedUser = this.userRepo.save(found);
         return updatedUser;
     }
-    
+
 }

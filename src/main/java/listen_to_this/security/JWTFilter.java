@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import listen_to_this.entities.User;
 import listen_to_this.exceptions.UnauthorizedException;
 import listen_to_this.services.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,6 +24,7 @@ public class JWTFilter extends OncePerRequestFilter {
     private final JWTTools jwtTools;
     private final UserService userService;
 
+    @Autowired
     public JWTFilter(JWTTools jwtTools, UserService userService) {
         this.jwtTools = jwtTools;
         this.userService = userService;
