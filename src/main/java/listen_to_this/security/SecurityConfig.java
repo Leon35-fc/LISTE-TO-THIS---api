@@ -37,7 +37,7 @@ public class SecurityConfig {
         //disabilitare le sessioni
         httpSecurity.sessionManagement(sessions -> sessions.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         //Disabilita la protezione su TUTTI gli endpoint
-        httpSecurity.authorizeHttpRequests(req -> req.requestMatchers("/auth/**").permitAll().requestMatchers("/users/**").authenticated().anyRequest().authenticated());
+        httpSecurity.authorizeHttpRequests(req -> req.requestMatchers("/auth/**").permitAll().requestMatchers("/users/**").authenticated().requestMatchers("/suggestions/**").permitAll().anyRequest().authenticated());
 
         httpSecurity.cors(Customizer.withDefaults());
 
