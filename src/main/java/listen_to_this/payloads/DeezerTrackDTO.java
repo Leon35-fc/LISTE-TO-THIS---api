@@ -9,15 +9,16 @@ public record DeezerTrackDTO(
         String title,
         String preview,
         Artist artist,
+        Artist tracklist,
         Album album
 ) {
-    public record Artist(long id, String name) {
+    public record Artist(long id, String name, String tracklist) {
     }
 
     public record Album(
             long id,
             @JsonProperty("title") String albumTitle,
-            @JsonProperty("cover_big") String pictureBig
+            @JsonProperty("cover_xl") String coverXL
     ) {
     }
 }

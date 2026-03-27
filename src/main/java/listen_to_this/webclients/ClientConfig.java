@@ -10,7 +10,7 @@ public class ClientConfig {
     @Bean
     public RestClient suggestionRestClient(RestClient.Builder builder) {
         return builder
-                .baseUrl("https://striveschool-api.herokuapp.com/api/deezer/track")
+                .baseUrl("https://striveschool-api.herokuapp.com/api/deezer")
                 .defaultHeader("Accept", "application/json")
                 .build();
     }
