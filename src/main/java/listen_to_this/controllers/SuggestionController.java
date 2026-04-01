@@ -20,7 +20,8 @@ public class SuggestionController {
     @PostMapping("/add")
     @ResponseStatus(HttpStatus.CREATED)
     public Suggestion addOrUpdateSuggestion(@RequestBody SuggestionDTO suggestion) {
-
+        SuggestionDTO inverseSuggestion = new SuggestionDTO(suggestion.suggestionId(), suggestion.songId(), suggestion.vote());
+        this.suggestionService.save(inverseSuggestion);
         return this.suggestionService.save(suggestion);
     }
 

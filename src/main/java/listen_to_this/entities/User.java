@@ -28,13 +28,13 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String profileImage;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
             name = "user_favourites",
             joinColumns = @JoinColumn(name = "user_id")
     )
-    @Column(name = "canzone_id")
-    private Set<Long> favourite;
+    @Column(name = "song_id")
+    private Set<Long> favourite = new HashSet<>();
 
     public User() {
     }
@@ -43,7 +43,7 @@ public class User implements UserDetails {
         this.username = username;
         this.email = email;
         this.password = password;
-        this.favourite = new HashSet<>();
+
     }
 
     public UUID getId() {

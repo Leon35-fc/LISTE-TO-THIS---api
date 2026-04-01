@@ -1,5 +1,6 @@
 package listen_to_this.services;
 
+import jakarta.transaction.Transactional;
 import listen_to_this.entities.User;
 import listen_to_this.exceptions.BadRequestException;
 import listen_to_this.exceptions.NotFoundException;
@@ -84,4 +85,29 @@ public class UserService {
         return updatedUser;
     }
 
+    @Transactional
+    public User addFavourite(UUID userId, long songId) {
+        User user = this.userRepo.findById(userId).orElseThrow(() -> new BadRequestException("User not found"));
+
+        user.getPreferiti().add(songId);
+
+        return userRepo.save(user);
+    }
+
+    @Transactional
+    public User removeFavourite(UUID userId, long songId) {
+
+        User user = this.userRepo.findById(userId).orElseThrow(() -> new BadRequestException("User not found"));
+
+        user.getPreferiti().remove(songId);
+        return this.userRepo.save(user);
+    }
+
+    @Transactional
+    public boolean isFavourite(UUID userId, long songId) {
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new BadRequestException("User not found"));
+
+        return user.getPreferiti().contains(songId);
+    }
 }
