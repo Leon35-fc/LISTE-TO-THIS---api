@@ -118,7 +118,7 @@ public class SuggestionService {
 
             return suggestRespDTO;
         } else {
-            return suggestions.parallelStream()
+            return suggestions.stream()
                     .map(s -> {
 //                        System.out.println("/track/" + s.getSongId());
                         DeezerTrackDTO track = restClient.get()
