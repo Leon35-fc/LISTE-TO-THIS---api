@@ -7,6 +7,7 @@ import listen_to_this.payloads.SuggestionDTO;
 import listen_to_this.payloads.SuggestionResponseDTO;
 import listen_to_this.repositories.SuggestionRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
@@ -89,6 +90,7 @@ public class SuggestionService {
         return songData.artist().id();
     }
 
+    @Cacheable(value = "suggestions", key = "#a0")
     public List<SuggestionResponseDTO> getSuggestedData(Long songId) {
         List<Suggestion> suggestions = suggestionRepo.findAllBySongId(songId);
         if (suggestions.isEmpty()) {
@@ -115,7 +117,7 @@ public class SuggestionService {
 
                         );
                     }).toList();
-
+            System.out.println("--- Chiamata al database per ID: " + songId);
             return suggestRespDTO;
         } else {
             return suggestions.stream()
